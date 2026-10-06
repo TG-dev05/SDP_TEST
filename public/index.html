@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Repo Analysis Tool</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <p class="eyebrow">RAT Dashboard</p>
+      <h1>Repo Analysis Tool</h1>
+      <p>Upload or clone Git repositories, then inspect file, directory, repository, commit-set, and author metrics.</p>
+    </div>
+    <div class="heroActions">
+      <button id="startTour" type="button" class="tourStartButton">Start tour</button>
+      <div id="status" class="status">Ready</div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section id="addRepoCard" class="card" data-tour="add-repository">
+      <h2>Add repository</h2>
+      <form id="cloneForm" class="stack" data-tour="clone-form">
+        <label>Remote URL<input id="cloneUrl" type="url" placeholder="https://github.com/DaveGamble/cJSON.git" required></label>
+        <label>Name (optional)<input id="cloneName" placeholder="cJSON"></label>
+        <label>Reference commit or branch (optional)<input id="cloneRef" placeholder="HEAD, main, or a commit hash"></label>
+        <button type="submit">Clone and analyse</button>
+      </form>
+      <hr>
+      <form id="uploadForm" class="stack" data-tour="upload-form">
+        <label>Zip file<input id="repoZip" name="repoZip" type="file" accept=".zip" required></label>
+        <label>Name (optional)<input id="uploadName" name="name" placeholder="Repository name"></label>
+        <label>Reference commit or branch (optional)<input id="uploadRef" name="ref" placeholder="HEAD, main, or a commit hash"></label>
+        <button type="submit">Upload and analyse</button>
+      </form>
+    </section>
+
+    <section id="dashboardCard" class="card wide" data-tour="dashboard">
+      <div class="toolbar">
+        <h2>Dashboard</h2>
+        <button id="refreshRepos">Refresh</button>
+      </div>
+      <div id="filtersPanel" class="filters" data-tour="filters">
+        <label>Repository<select id="repoSelect"></select></label>
+        <label>Author<select id="authorFilter"><option value="">All authors</option></select></label>
+        <label>Object type<select id="typeFilter"><option value="all">All</option><option value="file">Files</option><option value="directory">Directories</option></select></label>
+        <label>Path<input id="pathFilter" list="pathOptions" placeholder="/, src, file.js"></label>
+        <datalist id="pathOptions"></datalist>
+        <label>Start date<input id="startFilter" type="date"></label>
+        <label>End date<input id="endFilter" type="date"></label>
+      </div>
+      <label class="full">Manual commit set<textarea id="commitFilter" rows="3" placeholder="Paste commit hashes separated by spaces, commas, or new lines"></textarea></label>
+      <div class="actions"><button id="applyFilters">Apply filters</button><button id="reanalyze">Reanalyse</button></div>
+
+      <div class="summary" id="summaryCards" data-tour="summary"></div>
+      <div class="chart" id="chart" data-tour="chart"></div>
+      <div class="pieChartCard" id="authorPieChart" data-tour="author-pie"></div>
+    </section>
+
+    <section id="objectMetricsCard" class="card wide" data-tour="object-metrics">
+      <h2>Object metrics</h2>
+      <div class="tableWrap"><table id="metricsTable"><thead><tr><th>Type</th><th>Path</th><th>Added</th><th>Removed</th><th>Growth</th><th>Churn</th><th>Mods</th><th>Mod freq</th><th>Churn rate</th><th>Top owner</th></tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <section id="authorTotalsCard" class="card" data-tour="author-totals">
+      <h2>Author totals</h2>
+      <div id="authorTotals"></div>
+    </section>
+
+    <section id="authorMergeCard" class="card" data-tour="author-merge">
+      <h2>Manual author merge</h2>
+      <p class="muted">Mailmap is applied automatically by Git. Use this to merge any remaining aliases.</p>
+      <form id="mergeForm" class="stack">
+        <label>Canonical author<select id="canonicalAuthor"></select></label>
+        <label>Aliases<select id="aliasAuthors" multiple size="7"></select></label>
+        <button type="submit">Merge selected aliases</button>
+      </form>
+    </section>
+  </main>
+
+  <div id="tourOverlay" class="tourOverlay" hidden>
+    <div id="tourBackdrop" class="tourBackdrop"></div>
+    <div id="tourSpotlight" class="tourSpotlight" aria-hidden="true"></div>
+    <section id="tourPanel" class="tourPanel" role="dialog" aria-modal="true" aria-labelledby="tourTitle" aria-describedby="tourText">
+      <div class="tourProgress"><span id="tourStepCounter">Step 1 of 8</span></div>
+      <h2 id="tourTitle">Welcome</h2>
+      <p id="tourText">This short tour explains how to use the dashboard.</p>
+      <div class="tourTip" id="tourTip"></div>
+      <div class="tourActions">
+        <button id="tourSkip" type="button" class="secondaryButton">Skip</button>
+        <div>
+          <button id="tourBack" type="button" class="secondaryButton">Back</button>
+          <button id="tourNext" type="button">Next</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
